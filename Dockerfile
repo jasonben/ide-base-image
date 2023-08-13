@@ -98,7 +98,6 @@ RUN \
   fzf \
   git \
   github-cli \
-  go \
   gum \
   highlight \
   httpie \
@@ -129,6 +128,7 @@ RUN \
   zsh \
   && \
   apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/community \
+  go \
   rtx \
   && \
   echo "%%%%%%%%%%%%%%===> System: Done installing apps" && \
