@@ -2,7 +2,7 @@
 
 set -e pipefail
 
-source .env
+# source .env
 
 check_vars() {
   var_names=("$@")

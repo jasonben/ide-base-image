@@ -213,8 +213,9 @@ RUN \
     go install github.com/akavel/up@master \
           && \
   echo "%%%%%%%%%%%%%%===> Go: lazygit" && \
-    go install github.com/jesseduffield/lazygit@latest \
-          && \
+    go install github.com/jesseduffield/lazygit@latest
+
+RUN \
   echo "%%%%%%%%%%%%%%===> Random: Install has command" && \
     git clone https://github.com/kdabir/has.git && cd has && doas make install && cd .. && rm -rf has \
     && \
