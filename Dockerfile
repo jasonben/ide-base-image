@@ -213,12 +213,11 @@ RUN \
     go install github.com/akavel/up@master \
           && \
   echo "%%%%%%%%%%%%%%===> Go: lazygit" && \
-    go install github.com/jesseduffield/lazygit@latest
-
-RUN \
+    go install github.com/jesseduffield/lazygit@latest \
+          && \
   echo "%%%%%%%%%%%%%%===> Random: Install has command" && \
     git clone https://github.com/kdabir/has.git && cd has && doas make install && cd .. && rm -rf has \
-    && \
+          && \
   echo "%%%%%%%%%%%%%%===> Ruby: Installing packages" && \
     gem install --no-document \
       amazing_print \
