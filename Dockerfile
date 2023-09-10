@@ -16,17 +16,16 @@ ENV \
   EDITOR=vim \
   GOPATH=$IDE_HOME/go \
   GEM_HOME=$IDE_HOME/bundle \
-  YARN_HOME=$IDE_HOME/yarn
+  PNPM_HOME=$IDE_HOME/pnpm
 
 ENV \
   BUNDLE_APP_CONFIG="$GEM_HOME" \
   BUNDLE_PATH="$GEM_HOME" \
   BUNDLE_BIN="$GEM_HOME/bin" \
-  GOPATH_BIN="$GOPATH/bin" \
-  YARN_BIN="$YARN_HOME/bin"
+  GOPATH_BIN="$GOPATH/bin"
 
 ENV \
-  PATH="$YARN_BIN:$BUNDLE_BIN:$GOPATH_BIN:$PATH"
+  PATH="$PNPM_HOME:$BUNDLE_BIN:$GOPATH_BIN:$PATH"
 
 # hadolint ignore=DL4006
 RUN \
@@ -85,27 +84,32 @@ RUN \
   bash \
   bat \
   bind-tools \
+  broot \
   btop \
   ctags \
   curl \
   delta \
   doas \
   docker \
-  docker-cli-compose \
   docker-cli-buildx \
+  docker-cli-compose \
+  doctl \
   exa \
   fd \
   fzf \
   git \
   github-cli \
   gum \
+  hcloud \
   highlight \
   httpie \
   jq \
   less \
   libqalculate \
+  miller \
   ncdu \
   nodejs \
+  npm \
   onefetch \
   openssh-client \
   python3 \
@@ -116,6 +120,8 @@ RUN \
   shadow \
   shellcheck \
   shfmt \
+  starship \
+  tailscale \
   the_silver_searcher \
   tmux \
   tree \
@@ -188,15 +194,16 @@ RUN \
       $IDE_HOME/.base16-shell \
     && \
   echo "%%%%%%%%%%%%%%===> System: Installing lazydocker" && \
-    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash \
-    && \
-  echo "%%%%%%%%%%%%%%===> Ruby: Configure" && \
-    mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME" && chown -R $IDE_USER:$IDE_USER "$GEM_HOME" \
-          && \
+    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+
+RUN \
   echo "%%%%%%%%%%%%%%===> Go: Configuring folders" && \
     mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" \
           && \
   echo "%%%%%%%%%%%%%%===> Go: Installing packages" && \
+  echo "%%%%%%%%%%%%%%===> Go: jqp" && \
+    go install github.com/noahgorstein/jqp@latest \
+          && \
   echo "%%%%%%%%%%%%%%===> Go: sqls" && \
     go install github.com/lighttiger2505/sqls@latest \
           && \
@@ -217,6 +224,9 @@ RUN \
           && \
   echo "%%%%%%%%%%%%%%===> Random: Install has command" && \
     git clone https://github.com/kdabir/has.git && cd has && doas make install && cd .. && rm -rf has \
+  && \
+  echo "%%%%%%%%%%%%%%===> Ruby: Configure" && \
+    mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME" && chown -R $IDE_USER:$IDE_USER "$GEM_HOME" \
           && \
   echo "%%%%%%%%%%%%%%===> Ruby: Installing packages" && \
     gem install --no-document \
@@ -232,10 +242,10 @@ RUN \
       syntax_tree-haml \
       syntax_tree-rbs \
       tmuxinator \
-    && \
+  && \
   echo "%%%%%%%%%%%%%%===> Node: Installing packages" && \
-    yarn config set prefix "$IDE_HOME/yarn" && \
-    yarn global add \
+    doas npm install -g pnpm && \
+    pnpm add -g \
       @prettier/plugin-ruby \
       bash-language-server \
       chokidar-cli \
