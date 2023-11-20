@@ -214,7 +214,7 @@ RUN \
     go install github.com/charmbracelet/glow@latest \
           && \
   echo "%%%%%%%%%%%%%%===> Go: usql" && \
-    go install -tags most github.com/xo/usql@master \
+    go install -tags most github.com/xo/usql@v0.15.6 \
           && \
   echo "%%%%%%%%%%%%%%===> Go: ultimate plumber" && \
     go install github.com/akavel/up@master \
@@ -235,6 +235,10 @@ RUN \
       colorls \
       prettier_print \
       pry \
+      rubocop \
+      rubocop-rspec \
+      rubocop-rails \
+      rubocop-rake \
       solargraph \
       solargraph-rails \
       standardrb \
