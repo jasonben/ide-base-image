@@ -70,6 +70,7 @@ RUN \
   py3-wheel \
   python3-dev \
   ruby-dev \
+  s3fs-fuse \
   sqlite-dev \
   tiff \
   tzdata \
