@@ -255,6 +255,7 @@ RUN \
       chokidar-cli \
       dockerfilelint \
       gzip-size-cli \
+      heroku \
       np \
       prettier \
       prettier-plugin-autocorrect \
