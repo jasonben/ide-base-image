@@ -70,7 +70,6 @@ RUN \
   py3-wheel \
   python3-dev \
   ruby-dev \
-  s3fs-fuse \
   sqlite-dev \
   tiff \
   tzdata \
@@ -82,6 +81,7 @@ RUN \
   echo "%%%%%%%%%%%%%%===> System: Installing frequently used apps" && \
   apk add --no-cache \
   atuin \
+  aws-cli \
   bash \
   bat \
   bind-tools \
@@ -118,6 +118,7 @@ RUN \
   ripgrep \
   rsync \
   ruby \
+  s3fs-fuse \
   shadow \
   shellcheck \
   shfmt \
