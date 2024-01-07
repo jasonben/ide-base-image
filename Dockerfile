@@ -1,4 +1,4 @@
-FROM alpine:3.18
+FROM ruby:3.2.2-alpine3.19
 
 ARG \
   IDE_BASE_IMAGE
@@ -105,6 +105,7 @@ RUN \
   highlight \
   httpie \
   jq \
+  lazydocker \
   less \
   libqalculate \
   miller \
@@ -195,10 +196,6 @@ RUN \
     git clone --depth=1 https://github.com/base16-project/base16-shell.git \
       $IDE_HOME/.base16-shell \
     && \
-  echo "%%%%%%%%%%%%%%===> System: Installing lazydocker" && \
-    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-
-RUN \
   echo "%%%%%%%%%%%%%%===> Go: Configuring folders" && \
     mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH" \
           && \
@@ -207,7 +204,7 @@ RUN \
     go install github.com/noahgorstein/jqp@latest \
           && \
   echo "%%%%%%%%%%%%%%===> Go: sqls" && \
-    go install github.com/lighttiger2505/sqls@latest \
+    go install github.com/sqls-server/sqls@latest \
           && \
   echo "%%%%%%%%%%%%%%===> Go: gron" && \
     go install github.com/tomnomnom/gron@latest \
@@ -216,6 +213,7 @@ RUN \
     go install github.com/charmbracelet/glow@latest \
           && \
   echo "%%%%%%%%%%%%%%===> Go: usql" && \
+    CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
     go install -tags most github.com/xo/usql@v0.15.6 \
           && \
   echo "%%%%%%%%%%%%%%===> Go: ultimate plumber" && \
@@ -227,9 +225,30 @@ RUN \
   echo "%%%%%%%%%%%%%%===> Random: Install has command" && \
     git clone https://github.com/kdabir/has.git && cd has && doas make install && cd .. && rm -rf has \
   && \
+  echo "%%%%%%%%%%%%%%===> Python: Installing packages" && \
+  pip3 install \
+    --user \
+    --break-system-packages \
+    --upgrade \
+    --no-cache-dir \
+    pip \
+    setuptools \
+  && \
+  pip3 install \
+    --user \
+    --break-system-packages \
+    --no-cache-dir \
+    black \
+    pynvim \
+    python-language-server \
+    nginx-language-server \
+    tldr \
+    visidata \
+    openpyxl \
+  && \
   echo "%%%%%%%%%%%%%%===> Ruby: Configure" && \
     mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME" && chown -R $IDE_USER:$IDE_USER "$GEM_HOME" \
-          && \
+  && \
   echo "%%%%%%%%%%%%%%===> Ruby: Installing packages" && \
     gem install --no-document \
       amazing_print \
@@ -275,19 +294,23 @@ RUN \
       vim-language-server \
       vscode-html-languageserver-bin \
     && \
-  echo "%%%%%%%%%%%%%%===> Python: Installing packages" && \
-    pip3 install --upgrade --no-cache-dir pip setuptools && \
-    pip3 install --user --no-cache-dir \
-      black \
-      pynvim \
-      python-language-server \
-      nginx-language-server \
-      tldr \
-    && \
-    go clean -cache && \
-    doas rm -rf "$GOPATH/src" && \
-    doas rm -rf "$GOPATH/pkg" && \
-    doas rm -rf "$IDE_HOME/.cache"
+  go clean -cache && \
+  doas rm -rf "$GOPATH/src" && \
+  doas rm -rf "$GOPATH/pkg" && \
+  doas rm -rf "$IDE_HOME/.cache" && \
+  doas mkdir -p \
+    $IDE_HOME/.config/coc \
+    $IDE_HOME/.config/ide/context/personal/zsh \
+    $IDE_HOME/.config/ide/context/work/zsh \
+    $IDE_HOME/.tmuxinator \
+    $IDE_HOME/.cache \
+    $IDE_HOME/.ssh \
+  && \
+  doas chown -R ide:ide \
+    $IDE_HOME/.cache \
+    $IDE_HOME/.config \
+    $IDE_HOME/.ssh \
+    $IDE_HOME/.tmuxinator
 
 ENV \
   IDE_BASE_IMAGE=${IDE_BASE_IMAGE}
